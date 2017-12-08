@@ -13,6 +13,10 @@ navbarPage(
     ),
     
     tabPanel("Chloropleth",
+             selectInput(inputId = "detail_level",
+                         label = "State or County Level:",
+                         choices = c("County", "State"),
+                         selected = "State"),
              plotlyOutput(outputId = "choropleth", height = "450px")
     ),
     
@@ -37,7 +41,11 @@ navbarPage(
     ),
     
     tabPanel("Fire Size Across Months",
-             plotlyOutput(outputId = "month_bar", height = "450px")
+             selectInput(inputId = "month_bar_type",
+                         label = "Bar Chart Type:",
+                         choices = c("Stacked", "Side-by-Side", "Proportional"),
+                         selected = "Stacked"),
+             plotOutput(outputId = "month_bar", height = "450px")
     )
   )
   
