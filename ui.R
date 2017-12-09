@@ -12,12 +12,14 @@ navbarPage(
              plotlyOutput(outputId = "dendrogram", height = "450px")
     ),
     
-    tabPanel("Chloropleth",
-             selectInput(inputId = "detail_level",
-                         label = "State or County Level:",
-                         choices = c("County", "State"),
-                         selected = "State"),
-             plotlyOutput(outputId = "choropleth", height = "450px")
+    tabPanel("Fire Size by State",
+             sliderInput(inputId = "choro_year",
+                         label = "Select Year",
+                         min = 2010,
+                         max = 2015,
+                         step = 1,
+                         value = 2010),
+             leafletOutput(outputId = "choropleth", height = "450px")
     ),
     
     tabPanel("Time Series",
