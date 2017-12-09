@@ -46,7 +46,7 @@ function(input, output) {
     
   })
   
-  output$month_bar <- renderPlot({
+  output$month_bar <- renderPlotly({
     
     if(input$month_bar_type == "Stacked") {
       ggplot(data = wild_fires, 

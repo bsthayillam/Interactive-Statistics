@@ -45,7 +45,7 @@ navbarPage(
                          label = "Bar Chart Type:",
                          choices = c("Stacked", "Side-by-Side", "Proportional"),
                          selected = "Stacked"),
-             plotOutput(outputId = "month_bar", height = "450px")
+             plotlyOutput(outputId = "month_bar", height = "450px")
     )
   )
   
