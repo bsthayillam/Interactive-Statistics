@@ -201,7 +201,39 @@ function(input, output) {
     print(histogram_plot)
   })
   
-  output$state_bar <- renderPlot({
+  output$state_bar <- renderPlotly({
+    if(input$state_bar_type == "Stacked") {
+      ggplot(data = wild_fires,
+             aes(x = STATE, fill = STAT_CAUSE_DESCR)) + 
+        geom_bar() + 
+        theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
+        labs(title = "Distribution of Wild Fires by State",
+                          x = "State",
+                          y = "Number of Wild Fires",
+                          fill = "Wild Fire Causes")
+    }
+    
+    else if(input$state_bar_type == "Side-by-Side") {
+      ggplot(data = wild_fires,
+             aes(x = STATE, fill = STAT_CAUSE_DESCR)) +
+        geom_bar(position = "dodge") + 
+        theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
+        labs(title = "Distribution of Wild Fires by State",
+                                            x = "State",
+                                            y = "Number of Wild Fires",
+                                            fill = "Wild Fire Causes")
+    }
+    
+    else if(input$state_bar_type == "Proportional") {
+      ggplot(data = wild_fires, 
+             aes(x = STATE, fill = STAT_CAUSE_DESCR)) + 
+        geom_bar(position = "fill", na.rm = TRUE) + 
+        theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
+        labs(title = "Distribution of Wild Fires by State",
+                                           x = "State",
+                                           y = "Number of Wild Fires",
+                                           fill = "Wild Fire Causes")
+    }
     
   })
   
