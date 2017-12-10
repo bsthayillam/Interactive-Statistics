@@ -30,18 +30,20 @@ navbarPage(
              plotlyOutput(outputId = "txt_analysis", height = "450px")
     ),
     
-    tabPanel("Scatterplot",
-             plotlyOutput(outputId = "scatter", height = "450px")
+    tabPanel("Word Cloud",
+            selectInput(inputId = "year_input2",
+                        label = "Year of the Fire: ",
+                        choices = years,
+                        selected = default_year),
+            plotOutput("wordcloud_plot")
     ),
     
     tabPanel("Proportional Histogram",
-            column(12, plotOutput("histogram_plot")),
-            column(12,wellPanel(
-               selectInput(inputId = "year_input1",
-                             label = "Year of the Fire: ",
-                             choices = years,
-                             selected = default_year))
-               )
+            selectInput(inputId = "year_input1",
+                        label = "Year of the Fire: ",
+                        choices = years,
+                        selected = default_year),
+            plotOutput("histogram_plot")
     ),
     
     tabPanel("Fires by State",

@@ -3,6 +3,8 @@ library(tidyverse)
 library(lubridate)
 library(geojsonio)
 library(RSQLite)
+library(wordcloud)
+library(tm)
 
 con <- dbConnect(RSQLite::SQLite(), dbname="data.sqlite")
 alltables <- dbListTables(con)

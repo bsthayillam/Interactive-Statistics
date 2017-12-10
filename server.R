@@ -62,12 +62,28 @@ function(input, output) {
     
   })
   
-  output$scatter <- renderPlot({
-    
+  output$wordcloud_plot <- renderPlot({
+    year <- input$year_input2
+    wild_fires2 <- dbGetQuery(con, paste('select * from Fires where FIRE_YEAR =', as.character(year), sep=" "))
+    Corpus <- Corpus(VectorSource(wild_fires2$STAT_CAUSE_DESCR))
+    wordcloud_plot <- wordcloud(Corpus, min.freq = 10, random.order = FALSE, colors = cb_palette)
+    print(wordcloud_plot)
   })
   
   output$histogram <- renderPlot({
     
+  })
+  
+  output$histogram_plot <- renderPlot({
+    year <- input$year_input1
+    wild_fires1 <- dbGetQuery(con, paste('select * from Fires where FIRE_YEAR =', as.character(year), sep=" "))
+    histogram_plot <- ggplot(data = wild_fires1, aes(x = LATITUDE, fill = FIRE_SIZE_CLASS)) + 
+      geom_histogram(bins = 50, color = "black") +
+      scale_color_manual(values = cb_palette) +
+      bthayill_315_theme +
+      labs(x = "Latitude", y = "Number of Fire", fill = "Size of Fire") +
+      ggtitle("Occurance of Fire at Different Latitude by Size")
+    print(histogram_plot)
   })
   
   output$state_bar <- renderPlot({
