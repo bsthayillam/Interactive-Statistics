@@ -9,7 +9,15 @@ navbarPage(
     theme = shinytheme("darkly"),
     
     tabPanel("Clustering",
-             plotlyOutput(outputId = "dendrogram", height = "450px")
+             selectInput(inputId = "dend_month",
+                         label = "Select Month",
+                         choices = month.abb,
+                         selected = "Jun"),
+             selectInput(inputId = "dend_label",
+                         label = "Select Leaf Label",
+                         choices = c("Cause", "County", "Fire Size"),
+                         selected = "Cause"),
+             plotlyOutput(outputId = "dendrogram", height = "900px")
     ),
     
     tabPanel("Fire Size by State",
@@ -35,6 +43,14 @@ navbarPage(
     ),
     
     tabPanel("Proportional Histogram",
+             selectInput(inputId = "fire_size_range",
+                         "Fire Size Range:",
+                         choices = c("Small", "Med", "Large", "Huge"),
+                         selected = "Small"),
+             selectInput(inputId = "hist_type",
+                         label = "Histogram Chart Type:",
+                         choices = c("Count", "Proportion"),
+                         selected = "Count"),
              plotlyOutput(outputId = "histogram", height = "450px")
     ),
     

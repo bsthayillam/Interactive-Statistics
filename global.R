@@ -11,7 +11,9 @@ wild_fires <- mutate(wild_fires,
   cont_date = as.Date(wild_fires$CONT_DATE-2451545, origin='2000-01-01'))
 
 wild_fires <- mutate(wild_fires,
-  discovery_month = month.abb[month(wild_fires$discovery_date)])
+  discovery_month = month.abb[month(wild_fires$discovery_date)],
+  discovery_year = year(wild_fires$discovery_date),
+  discovery_day = day(wild_fires$discovery_date))
 
 bthayill_315_theme <- theme_grey() +
   theme(axis.text = element_text(size = 9, color = "violetred4"),
@@ -30,3 +32,16 @@ state_info <- data.frame(name = as.character(states$name) )
 state_info$name <- as.character(state_info$name)
 
 state_data <- data_frame(state.abb, state.name = state.name)
+
+# Add categorical variable grouping together some of the fire causes.
+human_cause <- c("Arson", "Fireworks", "Smoking", "Children", "Campfire")
+nature_cause <- c("Lightning", "Debris Burning")
+infrastructure_cause <- c("Equipment Use", "Powerline", "Railroad", "Structure")
+unknown_cause <- c("Missing/Undefined", "Miscellaneous")
+wild_fires <- mutate(wild_fires,
+  cause_type = ifelse(STAT_CAUSE_DESCR %in% human_cause, "Human",
+               ifelse(STAT_CAUSE_DESCR %in% nature_cause, "Nature", 
+               ifelse(STAT_CAUSE_DESCR %in% infrastructure_cause, "Infrastructure",
+                      "Undefined")))
+)
+
