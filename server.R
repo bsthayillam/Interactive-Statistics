@@ -109,10 +109,6 @@ function(input, output) {
     
   })
   
-  output$txt_analysis <- renderPlot({
-    
-  })
-  
   output$scatter <- renderPlot({
     
   })
@@ -183,10 +179,6 @@ function(input, output) {
     Corpus <- Corpus(VectorSource(wild_fires2$STAT_CAUSE_DESCR))
     wordcloud_plot <- wordcloud(Corpus, min.freq = 10, random.order = FALSE, colors = cb_palette)
     print(wordcloud_plot)
-  })
-  
-  output$histogram <- renderPlot({
-    
   })
   
   output$histogram_plot <- renderPlot({

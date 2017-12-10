@@ -12,11 +12,14 @@ library(tm)
 con <- dbConnect(RSQLite::SQLite(), dbname="data.sqlite")
 alltables <- dbListTables(con)
 wild_fires <- dbGetQuery(con,'select * from Fires where FIRE_YEAR >= 2010')
+
+# Convert Julian dates to normal calendar dates
 wild_fires <- mutate(wild_fires,
   discovery_date = 
     as.Date(wild_fires$DISCOVERY_DATE-2451545, origin='2000-01-01'), 
   cont_date = as.Date(wild_fires$CONT_DATE-2451545, origin='2000-01-01'))
 
+# Extract Months from fire discovery date
 wild_fires <- mutate(wild_fires,
   discovery_month = month.abb[month(wild_fires$discovery_date)],
   discovery_year = year(wild_fires$discovery_date),
@@ -31,6 +34,7 @@ bthayill_315_theme <- theme_grey() +
 cb_palette <- rev(c("#430A4B", "#1D5076", "#008781", "#64AE68", "#DBC363", "#FCDF80",
                 "#FFC4BE"))
 
+# Geo data for U.S. Choropleth
 state_vis_string <- paste0("https://raw.githubusercontent.com/python-visualization/",
                            "folium/master/examples/data/us-states.json")
 

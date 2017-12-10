@@ -34,11 +34,6 @@ navbarPage(
              plotlyOutput(outputId = "ts_plot", height = "450px")
     ),
     
-    tabPanel("Text Analysis", 
-             plotlyOutput(outputId = "txt_analysis", height = "450px")
-    ),
-    
-<<<<<<< HEAD
     tabPanel("Scatterplot",
              plotlyOutput(outputId = "scatter", height = "450px")
     ),
@@ -53,6 +48,8 @@ navbarPage(
                          choices = c("Count", "Proportion"),
                          selected = "Count"),
              plotlyOutput(outputId = "histogram", height = "450px")
+    ),
+             
     tabPanel("Word Cloud",
             selectInput(inputId = "year_input2",
                         label = "Year of the Fire: ",
@@ -84,5 +81,5 @@ navbarPage(
                          selected = "Stacked"),
              plotlyOutput(outputId = "month_bar", height = "450px")
     )
-  )
+)
   
