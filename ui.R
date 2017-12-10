@@ -47,6 +47,10 @@ navbarPage(
     ),
     
     tabPanel("Fires by State",
+             selectInput(inputId = "state_bar_type",
+                         label = "Bar Chart Type:",
+                         choices = c("Stacked", "Side-by-Side", "Proportional"),
+                         selected = "Stacked"),
              plotlyOutput(outputId = "state_bar", height = "450px")
     ),
     

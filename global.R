@@ -37,3 +37,4 @@ state_data <- data_frame(state.abb, state.name = state.name)
 
 years <- c(2010, 2011, 2012, 2013, 2014, 2015)
 default_year = 2010
+
