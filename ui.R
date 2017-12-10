@@ -62,7 +62,6 @@ dashboardPage(
                          selected = "Count"),
              plotlyOutput(outputId = "histogram", height = "450px")
     ),
-             
     tabItem(tabName = "part_f",
             selectInput(inputId = "year_input2",
                         label = "Year of the Fire: ",

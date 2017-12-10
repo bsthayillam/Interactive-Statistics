@@ -9,8 +9,6 @@ library(dygraphs)
 library(DT)
 library(dendextend)
 
-library(shiny)
-library(plotly)
 
 
 function(input, output) {
@@ -108,10 +106,6 @@ function(input, output) {
     
   })
   
-  output$scatter <- renderPlot({
-    
-  })
-  
   output$histogram <- renderPlotly({
     if (input$hist_type == "Count") { pos <- "stack" }
     else if (input$hist_type == "Proportion") { pos <- "fill"}
@@ -121,6 +115,7 @@ function(input, output) {
       wild_fires_small = wild_fires[small_indices,]
       ggplot(data = wild_fires_small, aes(x = FIRE_SIZE, fill = cause_type)) + 
         geom_histogram(binwidth = 1, position = pos) + bthayill_315_theme +
+        scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Fire Size",
           x = "Acres",
@@ -136,6 +131,7 @@ function(input, output) {
       
       ggplot(data = wild_fires_med, aes(x = FIRE_SIZE, fill = cause_type)) + 
         geom_histogram(binwidth = 100, position = pos) + bthayill_315_theme +
+        scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Fire Size",
           x = "Acres",
@@ -150,6 +146,7 @@ function(input, output) {
       
       ggplot(data = wild_fires_large, aes(x = FIRE_SIZE, fill = cause_type)) + 
         geom_histogram(binwidth = 500, position = pos) + bthayill_315_theme +
+        scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Fire Size",
           x = "Acres",
@@ -164,6 +161,7 @@ function(input, output) {
       
       ggplot(data = wild_fires_huge, aes(x = FIRE_SIZE, fill = cause_type)) + 
         geom_histogram(binwidth = 75000, position = pos) + bthayill_315_theme +
+        scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Fire Size",
           x = "Acres",
@@ -174,7 +172,7 @@ function(input, output) {
 })
   output$wordcloud_plot <- renderPlot({
     year <- input$year_input2
-    wild_fires2 <- dbGetQuery(con, paste('select * from Fires where FIRE_YEAR =', as.character(year), sep=" "))
+    wild_fires2 <- subset(wild_fires, FIRE_YEAR == as.numeric(year))
     Corpus <- Corpus(VectorSource(wild_fires2$STAT_CAUSE_DESCR))
     wordcloud_plot <- wordcloud(Corpus, min.freq = 10, random.order = FALSE, colors = cb_palette, font = 2)
     print(wordcloud_plot)
@@ -182,31 +180,30 @@ function(input, output) {
   
   output$histogram_plot <- renderPlot({
     year <- input$year_input1
-    wild_fires1 <- dbGetQuery(con, paste('select * from Fires where FIRE_YEAR =', as.character(year), sep=" "))
+    wild_fires1 <- subset(wild_fires, FIRE_YEAR == as.numeric(year))
     histogram_plot <- ggplot(data = wild_fires1, aes(x = LATITUDE)) + 
-      geom_histogram(aes(y = ..density.., fill = FIRE_SIZE_CLASS),bins = as.numeric(input$n_breaks), color = "black") +
-      scale_color_manual(values = cb_palette) +
+      geom_histogram(bins =as.numeric(input$n_breaks),color = "black", aes(y = ..density.., fill = FIRE_SIZE_CLASS)) +
+      scale_fill_manual(values = cb_palette) +
       bthayill_315_theme +
       labs(x = "Latitude", y = "Number of Fire", fill = "Size of Fire") +
       ggtitle("Occurance of Fire at Different Latitude by Size")
-    print(histogram_plot)
     
     if (input$individual_obs) {
       histogram_plot <- histogram_plot + geom_rug()
-      print(histogram_plot)
     }
     
     if (input$density) {
       histogram_plot <- histogram_plot + geom_density(adjust = input$bw_adjust, color = "blue")
-      print(histogram_plot)
     }
+    print(histogram_plot)
+    
   })
   
   output$state_bar <- renderPlotly({
     if(input$state_bar_type == "Stacked") {
       ggplot(data = wild_fires,
              aes(x = STATE, fill = STAT_CAUSE_DESCR)) + 
-        geom_bar() + 
+        geom_bar() + bthayill_315_theme +
         theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
         labs(title = "Distribution of Wild Fires by State",
                           x = "State",
@@ -217,7 +214,7 @@ function(input, output) {
     else if(input$state_bar_type == "Side-by-Side") {
       ggplot(data = wild_fires,
              aes(x = STATE, fill = STAT_CAUSE_DESCR)) +
-        geom_bar(position = "dodge") + 
+        geom_bar(position = "dodge") + bthayill_315_theme +
         theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
         labs(title = "Distribution of Wild Fires by State",
                                             x = "State",
@@ -228,7 +225,7 @@ function(input, output) {
     else if(input$state_bar_type == "Proportional") {
       ggplot(data = wild_fires, 
              aes(x = STATE, fill = STAT_CAUSE_DESCR)) + 
-        geom_bar(position = "fill", na.rm = TRUE) + 
+        geom_bar(position = "fill", na.rm = TRUE) + bthayill_315_theme +
         theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
         labs(title = "Distribution of Wild Fires by State",
                                            x = "State",
