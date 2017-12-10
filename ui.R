@@ -3,7 +3,7 @@ library(plotly)
 library(threejs)
 library(dygraphs)
 library(leaflet)
-  
+
 navbarPage(
     title = "Wildfire Risks 2010-2015",
     
