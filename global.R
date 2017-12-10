@@ -1,5 +1,7 @@
 library(tidyverse)
 library(lubridate)
+library(geojsonio)
+library(leaflet)
 library(RSQLite)
 
 con <- dbConnect(RSQLite::SQLite(), dbname="data.sqlite")

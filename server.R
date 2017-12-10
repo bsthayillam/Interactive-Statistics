@@ -1,9 +1,7 @@
 library(gapminder)
-library(geojsonio)
 
 library(shiny)
 library(plotly)
-library(leaflet)
 library(dygraphs)
 library(DT)
 
