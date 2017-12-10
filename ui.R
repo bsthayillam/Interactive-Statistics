@@ -17,7 +17,7 @@ navbarPage(
                          label = "Select Leaf Label",
                          choices = c("Cause", "County", "Fire Size"),
                          selected = "Cause"),
-             plotlyOutput(outputId = "dendrogram", height = "900px")
+             plotlyOutput(outputId = "dendrogram", height = "450px")
     ),
     
     tabPanel("Fire Size by State",
@@ -38,6 +38,7 @@ navbarPage(
              plotlyOutput(outputId = "txt_analysis", height = "450px")
     ),
     
+<<<<<<< HEAD
     tabPanel("Scatterplot",
              plotlyOutput(outputId = "scatter", height = "450px")
     ),
@@ -52,6 +53,20 @@ navbarPage(
                          choices = c("Count", "Proportion"),
                          selected = "Count"),
              plotlyOutput(outputId = "histogram", height = "450px")
+    tabPanel("Word Cloud",
+            selectInput(inputId = "year_input2",
+                        label = "Year of the Fire: ",
+                        choices = years,
+                        selected = default_year),
+            plotOutput("wordcloud_plot")
+    ),
+    
+    tabPanel("Proportional Histogram",
+            selectInput(inputId = "year_input1",
+                        label = "Year of the Fire: ",
+                        choices = years,
+                        selected = default_year),
+            plotOutput("histogram_plot")
     ),
     
     tabPanel("Fires by State",

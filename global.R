@@ -1,6 +1,13 @@
 library(tidyverse)
 library(lubridate)
 library(RSQLite)
+library(leaflet)
+library(tidyverse)
+library(lubridate)
+library(geojsonio)
+library(RSQLite)
+library(wordcloud)
+library(tm)
 
 con <- dbConnect(RSQLite::SQLite(), dbname="data.sqlite")
 alltables <- dbListTables(con)
@@ -45,3 +52,5 @@ wild_fires <- mutate(wild_fires,
                       "Undefined")))
 )
 
+years <- c(2010, 2011, 2012, 2013, 2014, 2015)
+default_year = 2010
