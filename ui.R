@@ -2,6 +2,7 @@ library(shinythemes)
 library(plotly)
 library(threejs)
 library(dygraphs)
+library(leaflet)
   
 navbarPage(
     title = "Wildfire Risks 2010-2015",
@@ -35,7 +36,13 @@ navbarPage(
     ),
     
     tabPanel("Proportional Histogram",
-             plotlyOutput(outputId = "histogram", height = "450px")
+            column(12, plotOutput("histogram_plot")),
+            column(12,wellPanel(
+               selectInput(inputId = "year_input1",
+                             label = "Year of the Fire: ",
+                             choices = years,
+                             selected = default_year))
+               )
     ),
     
     tabPanel("Fires by State",

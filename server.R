@@ -72,6 +72,18 @@ function(input, output) {
     
   })
   
+  output$histogram_plot <- renderPlot({
+    year <- input$year_input1
+    wild_fires1 <- dbGetQuery(con, paste('select * from Fires where FIRE_YEAR =', as.character(year), sep=" "))
+    histogram_plot <- ggplot(data = wild_fires1, aes(x = LATITUDE, fill = FIRE_SIZE_CLASS)) + 
+      geom_histogram(bins = 50, color = "black") +
+      scale_color_manual(values = cb_palette) +
+      theme_bw() +
+      labs(x = "Latitude", y = "Number of Fire", fill = "Size of Fire") +
+      ggtitle("whatever")
+    print(histogram_plot)
+  })
+  
   output$state_bar <- renderPlot({
     
   })

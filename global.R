@@ -1,5 +1,6 @@
 library(tidyverse)
 library(lubridate)
+library(geojsonio)
 library(RSQLite)
 
 con <- dbConnect(RSQLite::SQLite(), dbname="data.sqlite")
@@ -30,3 +31,6 @@ state_info <- data.frame(name = as.character(states$name) )
 state_info$name <- as.character(state_info$name)
 
 state_data <- data_frame(state.abb, state.name = state.name)
+
+years <- c(2010, 2011, 2012, 2013, 2014, 2015)
+default_year = 2010
