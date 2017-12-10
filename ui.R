@@ -8,16 +8,24 @@ navbarPage(
     
     theme = shinytheme("darkly"),
     
-    tabPanel("Clustering",
-             selectInput(inputId = "dend_month",
-                         label = "Select Month",
-                         choices = month.abb,
-                         selected = "Jun"),
-             selectInput(inputId = "dend_label",
-                         label = "Select Leaf Label",
-                         choices = c("Cause", "County", "Fire Size"),
-                         selected = "Cause"),
-             plotlyOutput(outputId = "dendrogram", height = "450px")
+    tabPanel("Time Series",
+             plotlyOutput(outputId = "ts_plot", height = "450px")
+    ),
+    
+    tabPanel("Fire Size Across Months",
+             selectInput(inputId = "month_bar_type",
+                         label = "Bar Chart Type:",
+                         choices = c("Stacked", "Side-by-Side", "Proportional"),
+                         selected = "Stacked"),
+             plotlyOutput(outputId = "month_bar", height = "450px")
+    ),
+    
+    tabPanel("Fires by State",
+             selectInput(inputId = "state_bar_type",
+                         label = "Bar Chart Type:",
+                         choices = c("Stacked", "Side-by-Side", "Proportional"),
+                         selected = "Stacked"),
+             plotlyOutput(outputId = "state_bar", height = "450px")
     ),
     
     tabPanel("Fire Size by State",
@@ -30,15 +38,27 @@ navbarPage(
              leafletOutput(outputId = "choropleth", height = "450px")
     ),
     
-    tabPanel("Time Series",
-             plotlyOutput(outputId = "ts_plot", height = "450px")
+    tabPanel("Fire Size by Latitude",
+             selectInput(inputId = "year_input1",
+                         label = "Year of the Fire: ",
+                         choices = years,
+                         selected = default_year),
+             plotOutput("histogram_plot")
     ),
     
-    tabPanel("Scatterplot",
-             plotlyOutput(outputId = "scatter", height = "450px")
+    tabPanel("Clustering",
+             selectInput(inputId = "dend_month",
+                         label = "Select Month",
+                         choices = month.abb,
+                         selected = "Jun"),
+             selectInput(inputId = "dend_label",
+                         label = "Select Leaf Label",
+                         choices = c("Cause", "County", "Fire Size"),
+                         selected = "Cause"),
+             plotlyOutput(outputId = "dendrogram", height = "450px")
     ),
     
-    tabPanel("Proportional Histogram",
+    tabPanel("Fire Size by Cause",
              selectInput(inputId = "fire_size_range",
                          "Fire Size Range:",
                          choices = c("Small", "Med", "Large", "Huge"),
@@ -50,36 +70,12 @@ navbarPage(
              plotlyOutput(outputId = "histogram", height = "450px")
     ),
              
-    tabPanel("Word Cloud",
+    tabPanel("Word Cloud of Cause by Years",
             selectInput(inputId = "year_input2",
                         label = "Year of the Fire: ",
                         choices = years,
                         selected = default_year),
             plotOutput("wordcloud_plot")
-    ),
-    
-    tabPanel("Proportional Histogram",
-            selectInput(inputId = "year_input1",
-                        label = "Year of the Fire: ",
-                        choices = years,
-                        selected = default_year),
-            plotOutput("histogram_plot")
-    ),
-    
-    tabPanel("Fires by State",
-             selectInput(inputId = "state_bar_type",
-                         label = "Bar Chart Type:",
-                         choices = c("Stacked", "Side-by-Side", "Proportional"),
-                         selected = "Stacked"),
-             plotlyOutput(outputId = "state_bar", height = "450px")
-    ),
-    
-    tabPanel("Fire Size Across Months",
-             selectInput(inputId = "month_bar_type",
-                         label = "Bar Chart Type:",
-                         choices = c("Stacked", "Side-by-Side", "Proportional"),
-                         selected = "Stacked"),
-             plotlyOutput(outputId = "month_bar", height = "450px")
     )
 )
   
