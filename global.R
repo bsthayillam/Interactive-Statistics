@@ -1,3 +1,4 @@
+library(leaflet)
 library(tidyverse)
 library(lubridate)
 library(geojsonio)
