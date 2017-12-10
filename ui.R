@@ -8,15 +8,14 @@ dashboardPage(
   dashboardHeader(title = "Wildfire Risks 2010-2015"),
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Clustering", tabName = "part_a", icon = icon("dashboard")),
-      menuItem("Fire Size by State", tabName = "part_b", icon = icon("dashboard")),
       menuItem("Time Series", tabName = "part_c", icon = icon("dashboard")),
-      menuItem("ScatterPlot", tabName = "part_d", icon = icon("dashboard")),
-      menuItem("Proportional Histogram", tabName = "part_e", icon = icon("dashboard")),
-      menuItem("Word Cloud", tabName = "part_f", icon = icon("dashboard")),
-      menuItem("Proportional Histogram", tabName = "part_g", icon = icon("dashboard")),
+      menuItem("Fire Size Across Month", tabName = "part_i", icon = icon("dashboard")),
       menuItem("Fire by State", tabName = "part_h", icon = icon("dashboard")),
-      menuItem("Fire Size Across Month", tabName = "part_i", icon = icon("dashboard"))
+      menuItem("Fire Size by State", tabName = "part_b", icon = icon("dashboard")),
+      menuItem("Proportional Histogram", tabName = "part_g", icon = icon("dashboard")),
+      menuItem("Clustering", tabName = "part_a", icon = icon("dashboard")),
+      menuItem("Proportional Histogram", tabName = "part_e", icon = icon("dashboard")),
+      menuItem("Word Cloud", tabName = "part_f", icon = icon("dashboard"))
     )
   ),
   dashboardBody(
