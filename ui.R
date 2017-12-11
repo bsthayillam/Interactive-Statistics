@@ -44,7 +44,13 @@ dashboardPage(
     ),
     
     tabItem(tabName = "part_c",
-             plotlyOutput(outputId = "ts_plot", height = "450px")
+            checkboxInput(inputId = "show_average",
+                          label = strong("Show estimated average"),
+                          value = FALSE),
+            checkboxInput(inputId = "show_weighted_average",
+                          label = strong("Show estimated weighted average"),
+                          value = FALSE),
+             plotOutput(outputId = "ts_plot", height = "450px")
     ),
     
     tabItem(tabName = "part_d",
