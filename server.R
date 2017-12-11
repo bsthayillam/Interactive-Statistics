@@ -114,8 +114,8 @@ function(input, output) {
       small_indices = wild_fires$FIRE_SIZE_CLASS %in% c("A","B")
       wild_fires_small = wild_fires[small_indices,]
       ggplot(data = wild_fires_small, aes(x = FIRE_SIZE, fill = cause_type)) + 
-        geom_histogram(binwidth = 1, position = pos) + bthayill_315_theme +
-        scale_fill_manual(values = cb_palette) +
+        geom_histogram(binwidth = 1, position = pos, color = "black") + 
+        bthayill_315_theme + scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Fire Size",
           x = "Acres",
@@ -130,8 +130,8 @@ function(input, output) {
       wild_fires_med = wild_fires[med_indices,]
       
       ggplot(data = wild_fires_med, aes(x = FIRE_SIZE, fill = cause_type)) + 
-        geom_histogram(binwidth = 100, position = pos) + bthayill_315_theme +
-        scale_fill_manual(values = cb_palette) +
+        geom_histogram(binwidth = 100, position = pos, color = "black") + 
+        bthayill_315_theme + scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Fire Size",
           x = "Acres",
@@ -145,8 +145,8 @@ function(input, output) {
       wild_fires_large = wild_fires[large_indices,]
       
       ggplot(data = wild_fires_large, aes(x = FIRE_SIZE, fill = cause_type)) + 
-        geom_histogram(binwidth = 500, position = pos) + bthayill_315_theme +
-        scale_fill_manual(values = cb_palette) +
+        geom_histogram(binwidth = 500, position = pos, color = "black") + 
+        bthayill_315_theme + scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Fire Size",
           x = "Acres",
@@ -160,8 +160,8 @@ function(input, output) {
       wild_fires_huge = wild_fires[huge_indices,]
       
       ggplot(data = wild_fires_huge, aes(x = FIRE_SIZE, fill = cause_type)) + 
-        geom_histogram(binwidth = 75000, position = pos) + bthayill_315_theme +
-        scale_fill_manual(values = cb_palette) +
+        geom_histogram(binwidth = 75000, position = pos, color = "black") + 
+        bthayill_315_theme + scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Fire Size",
           x = "Acres",
@@ -193,7 +193,8 @@ function(input, output) {
     }
     
     if (input$density) {
-      histogram_plot <- histogram_plot + geom_density(adjust = input$bw_adjust, color = "blue")
+      histogram_plot <- histogram_plot + geom_density(adjust = input$bw_adjust, 
+                                            color = "orange", size = 1.25)
     }
     print(histogram_plot)
     
@@ -203,7 +204,7 @@ function(input, output) {
     if(input$state_bar_type == "Stacked") {
       ggplot(data = wild_fires,
              aes(x = STATE, fill = STAT_CAUSE_DESCR)) + 
-        geom_bar() + bthayill_315_theme +
+        geom_bar(color = "black") + bthayill_315_theme +
         theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
         labs(title = "Distribution of Wild Fires by State",
                           x = "State",
@@ -214,7 +215,7 @@ function(input, output) {
     else if(input$state_bar_type == "Side-by-Side") {
       ggplot(data = wild_fires,
              aes(x = STATE, fill = STAT_CAUSE_DESCR)) +
-        geom_bar(position = "dodge") + bthayill_315_theme +
+        geom_bar(position = "dodge", color = "black") + bthayill_315_theme +
         theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
         labs(title = "Distribution of Wild Fires by State",
                                             x = "State",
@@ -225,7 +226,8 @@ function(input, output) {
     else if(input$state_bar_type == "Proportional") {
       ggplot(data = wild_fires, 
              aes(x = STATE, fill = STAT_CAUSE_DESCR)) + 
-        geom_bar(position = "fill", na.rm = TRUE) + bthayill_315_theme +
+        geom_bar(position = "fill", na.rm = TRUE, color = "black") + 
+        bthayill_315_theme +
         theme(axis.text.x = element_text(angle = 40, hjust = 1)) +
         labs(title = "Distribution of Wild Fires by State",
                                            x = "State",
@@ -240,7 +242,7 @@ function(input, output) {
     if(input$month_bar_type == "Stacked") {
       ggplot(data = wild_fires, 
              aes(x = discovery_month, fill = FIRE_SIZE_CLASS)) + 
-        geom_bar() + bthayill_315_theme +
+        geom_bar(color = "black") + bthayill_315_theme +
         scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Wild Fires by Month",
@@ -253,7 +255,7 @@ function(input, output) {
     else if(input$month_bar_type == "Side-by-Side") {
       ggplot(data = wild_fires, 
              aes(x = discovery_month, fill = FIRE_SIZE_CLASS)) + 
-        geom_bar(position = "dodge") + bthayill_315_theme + 
+        geom_bar(position = "dodge", color = "black") + bthayill_315_theme + 
         scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Wild Fires by Month",
@@ -267,7 +269,7 @@ function(input, output) {
     else if(input$month_bar_type == "Proportional") {
       ggplot(data = wild_fires, 
              aes(x = discovery_month, fill = FIRE_SIZE_CLASS)) + 
-        geom_bar(position = "fill") + bthayill_315_theme + 
+        geom_bar(position = "fill", color = "black") + bthayill_315_theme + 
         scale_fill_manual(values = cb_palette) +
         labs(
           title = "Distribution of Wild Fires by Month",
