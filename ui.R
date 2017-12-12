@@ -6,11 +6,11 @@ library(shinydashboard)
   
 dashboardPage(
   skin = "purple",
-  dashboardHeader(title = "Wildfire Risks 2010-2015"),
+  dashboardHeader(title = "Wildfires 2010-2015"),
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Time Series", tabName = "part_c", icon = icon("dashboard")),
-      menuItem("Fire Size Across Months", tabName = "part_i", icon = icon("dashboard")),
+      menuItem("Number of Fires Over Time", tabName = "part_c", icon = icon("dashboard")),
+      menuItem("Fire Causes Over Time", tabName = "part_i", icon = icon("dashboard")),
       menuItem("Fires by State", tabName = "part_h", icon = icon("dashboard")),
       menuItem("Fire Size by State", tabName = "part_b", icon = icon("dashboard")),
       menuItem("Fire Size by Latitude", tabName = "part_g", icon = icon("dashboard")),
@@ -34,12 +34,9 @@ dashboardPage(
     ),
     
     tabItem(tabName = "part_b",
-             sliderInput(inputId = "choro_year",
-                         label = "Select Year",
-                         min = 2010,
-                         max = 2015,
-                         step = 1,
-                         value = 2010),
+             selectInput(inputId = "choro_month",
+                         label = "Select Month: ",
+                         choices = month.abb),
              leafletOutput(outputId = "choropleth", height = "450px")
     ),
     
@@ -107,11 +104,15 @@ dashboardPage(
     ),
     
     tabItem(tabName = "part_i",
-             selectInput(inputId = "month_bar_type",
-                         label = "Bar Chart Type:",
-                         choices = c("Stacked", "Side-by-Side", "Proportional"),
-                         selected = "Stacked"),
-             plotlyOutput(outputId = "month_bar")
+             selectInput(inputId = "fire_cause1",
+                         label = "First Fire Cause:",
+                         choices = fire_causes,
+                         selected = "Debris Burning"),
+            selectInput(inputId = "fire_cause2",
+                        label = "Second Fire Cause:",
+                        choices = fire_causes,
+                        selected = "Arson"),
+             plotOutput(outputId = "cause_ts")
     ))
 )
 ) 

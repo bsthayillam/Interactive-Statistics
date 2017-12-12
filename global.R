@@ -25,6 +25,9 @@ wild_fires <- mutate(wild_fires,
   discovery_year = year(wild_fires$discovery_date),
   discovery_day = day(wild_fires$discovery_date))
 
+# Extract list of fire causes
+fire_causes <- unique(wild_fires$STAT_CAUSE_DESCR)
+
 bthayill_315_theme <- theme_grey() +
   theme(axis.text = element_text(size = 9, color = "violetred4"),
         axis.line = element_line(color = "black"),

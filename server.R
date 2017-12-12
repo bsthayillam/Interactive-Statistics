@@ -8,6 +8,7 @@ library(leaflet)
 library(dygraphs)
 library(DT)
 library(dendextend)
+library(gridExtra)
 
 
 
@@ -61,7 +62,7 @@ function(input, output) {
   
   output$choropleth <- renderLeaflet({
     
-    state_avg <- subset(wild_fires, FIRE_YEAR == input$choro_year) %>% 
+    state_avg <- subset(wild_fires, discovery_month == input$choro_month) %>% 
       group_by(STATE) %>% summarize(avg_size = round(mean(FIRE_SIZE), 2))
     state_avg <- left_join(state_avg, state_data, by = c("STATE" = "state.abb"))
     
@@ -311,47 +312,62 @@ function(input, output) {
     
   })
   
-  output$month_bar <- renderPlotly({
+  output$cause_ts <- renderPlot({
     
-    if(input$month_bar_type == "Stacked") {
-      ggplot(data = wild_fires, 
-             aes(x = discovery_month, fill = FIRE_SIZE_CLASS)) + 
-        geom_bar(color = "black") + bthayill_315_theme +
-        scale_fill_manual(values = cb_palette) +
-        labs(
-          title = "Distribution of Wild Fires by Month",
-          subtitle = "A = Very Small --> G = Very Large",
-          x = "Month",
-          y = "Number of Wild Fires",
-          fill = "Fire Size Class"
-        )
-    }
-    else if(input$month_bar_type == "Side-by-Side") {
-      ggplot(data = wild_fires, 
-             aes(x = discovery_month, fill = FIRE_SIZE_CLASS)) + 
-        geom_bar(position = "dodge", color = "black") + bthayill_315_theme + 
-        scale_fill_manual(values = cb_palette) +
-        labs(
-          title = "Distribution of Wild Fires by Month",
-          subtitle = "A = Very Small --> G = Very Large",
-          x = "Month",
-          y = "Number of Wild Fires",
-          fill = "Fire Size Class"
-        )
+    wildfire_sub1 <- subset(wild_fires, STAT_CAUSE_DESCR == input$fire_cause1)
+    sub1_per_day <- wildfire_sub1 %>% 
+      group_by(discovery_date) %>% 
+      summarize(n_fires = n())
+    wildfire_sub2 <- subset(wild_fires, STAT_CAUSE_DESCR == input$fire_cause2)
+    sub2_per_day <- wildfire_sub2 %>% 
+      group_by(discovery_date) %>% 
+      summarize(n_fires = n())
+    
+    moving_average <- function(tt, time_series, ww) {
+      #  Throw an error if the window width is too big
+      if (ww > length(time_series))  
+        stop("Window width is greater than length of time series")
+      
+      #  If the window width is greater than the time point, return NA
+      if (tt < ww)  return(NA)
+      
+      return(mean(time_series[(tt-ww+1):tt]))
     }
     
-    else if(input$month_bar_type == "Proportional") {
-      ggplot(data = wild_fires, 
-             aes(x = discovery_month, fill = FIRE_SIZE_CLASS)) + 
-        geom_bar(position = "fill", color = "black") + bthayill_315_theme + 
-        scale_fill_manual(values = cb_palette) +
-        labs(
-          title = "Distribution of Wild Fires by Month",
-          subtitle = "A = Very Small --> G = Very Large",
-          x = "Month",
-          y = "Proportion of Wild Fires",
-          fill = "Fire Size Class"
-        )
+    get_moving_averages <- function(time_series, ww) {
+      #  Throw an error if the window width is too big
+      if (ww > length(time_series))  
+        stop("Window width is greater than length of time series")
+      
+      moving_avgs = c()
+      for (i in 1:length(time_series))
+      {
+        moving_avgs[i] <- moving_average(i, time_series, ww)
+      }
+      return(moving_avgs)
     }
+    
+    sub1_avg_14 <- get_moving_averages(sub1_per_day$n_fires, 14)
+    sub2_avg_14 <- get_moving_averages(sub2_per_day$n_fires, 14)
+    sub1_per_day <- mutate(sub1_per_day, avg_14 = sub1_avg_14)
+    sub2_per_day <- mutate(sub2_per_day, avg_14 = sub2_avg_14)
+    
+    sub1_ts_plot <- ggplot(sub1_per_day, aes(x = discovery_date, y = n_fires)) + 
+      geom_line() + scale_x_date() + bthayill_315_theme +
+      geom_line(aes(y = avg_14), color = "blue", size = 1.2, alpha = 0.8) +
+      labs(title = paste("Distribution of Wild Fires Over Time for", 
+                         input$fire_cause1), 
+           x = "Date", 
+           y = "Number of Fires")
+    
+    sub2_ts_plot <- ggplot(sub2_per_day, aes(x = discovery_date, y = n_fires)) + 
+      geom_line() + scale_x_date() + bthayill_315_theme +
+      geom_line(aes(y = avg_14), color = "blue", size = 1.2, alpha = 0.8) +
+      labs(title = paste("Distribution of Wild Fires Over Time for", 
+                         input$fire_cause2), 
+           x = "Date", 
+           y = "Number of Fires")
+    
+    grid.arrange(sub1_ts_plot, sub2_ts_plot, nrow = 2, ncol = 1)
   })
 }
