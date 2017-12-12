@@ -263,12 +263,17 @@ function(input, output) {
     state <- input$state_input1
     wild_fires3 <- subset(wild_fires, STATE == state)
     histogram_plot1 <- ggplot(data = wild_fires3, aes(x = log(FIRE_SIZE))) + 
-      geom_histogram(bins = 40, color = "black") +
+      geom_histogram(bins = as.numeric(input$n_breaks1), color = "black") +
       scale_fill_manual(values = cb_palette) +
       bthayill_315_theme +
-      labs(x = "Log Fire Size", y = "Number of Fire") +
-      ggtitle("Occurance of Fire at Different Latitude by Size")
-    histogram_plot1
+      labs(x = "Log (Fire Size / acre)", y = "Number of Fire") +
+      ggtitle("Fire Size in States")
+    print(histogram_plot1)
+    
+    if (input$individual_obs1) {
+      histogram_plot1 <- histogram_plot1 + geom_rug()
+      print(histogram_plot1)
+    }
   
   })
   
@@ -276,13 +281,17 @@ function(input, output) {
     state <- input$state_input2
     wild_fires4 <- subset(wild_fires, STATE == state)
     histogram_plot2 <- ggplot(data = wild_fires4, aes(x = log(FIRE_SIZE))) + 
-      geom_histogram(bins = 40,color = "black") +
+      geom_histogram( bins = as.numeric(input$n_breaks2),color = "black") +
       scale_fill_manual(values = cb_palette) +
       bthayill_315_theme +
-      labs(x = "Log Fire Size", y = "Number of Fire") +
-      ggtitle("Occurance of Fire at Different Latitude by Size")
-
-    histogram_plot2
+      labs(x = "Log (Fire Size / acre)", y = "Number of Fire") +
+      ggtitle("Fire Size in States")
+    print(histogram_plot2)
+    
+    if (input$individual_obs2) {
+      histogram_plot2 <- histogram_plot2 + geom_rug()
+      print(histogram_plot2)
+    }
     
   })
   

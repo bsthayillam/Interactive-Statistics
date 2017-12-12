@@ -105,7 +105,33 @@ dashboardPage(
                                  selected = default_state)
                      )
             ),
-            
+            fluidRow(
+              column(6,
+                     selectInput(inputId = "n_breaks1",
+                                 label = "Number of bins in histogram (approximate):",
+                                 choices = c(10, 20, 35, 50),
+                                 selected = 20)
+                     ),
+              column(6,
+                     selectInput(inputId = "n_breaks2",
+                                 label = "Number of bins in histogram (approximate):",
+                                 choices = c(10, 20, 35, 50),
+                                 selected = 20)
+                     )
+            ),
+            fluidRow(
+              column(6,
+                     checkboxInput(inputId = "individual_obs1",
+                                   label = strong("Show individual observations"),
+                                   value = FALSE)
+                     ),
+                     column(6,
+                            checkboxInput(inputId = "individual_obs2",
+                                          label = strong("Show individual observations"),
+                                          value = FALSE)
+              )
+              ),
+              
             fluidRow(
               column(6, 
                      plotOutput(outputId = "histogram_plot1", width  = "500px",height = "400px")
