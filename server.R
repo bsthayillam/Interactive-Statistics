@@ -13,51 +13,55 @@ library(gridExtra)
 
 
 function(input, output) {
-  
-  output$dendrogram <- renderPlot({
-    # TODO(Christina): Undo hardcoding of month
-    month = input$dend_month
-    month = "Oct"
-    
-    # Only get fire data for May 2015.
-    fires_may15 <- wild_fires[(wild_fires$discovery_month == month) & 
-                                (wild_fires$discovery_year == 2015) &
-                                (wild_fires$STATE == "CO"), ]
-    # Create distance matrix using scaled continuous variables.
-    fires_cont <- fires_may15[c("FIRE_SIZE", "LATITUDE", "LONGITUDE", "DISCOVERY_DATE")]
-    fires_cont_scale <- scale(fires_cont, center = TRUE, scale = TRUE)
-    dist_fires <- dist(fires_cont_scale)
-    
-    # Cluster.
-    hc_fires_complete <- hclust(dist_fires, method = "complete")
-    labels_complete <- cutree(hc_fires_complete, k = 4)
-    get_colors <- function(x, palette = rev(cb_palette)) palette[match(x, unique(x))]
-    
-    # Create dendrogram.
-    dend <- as.dendrogram(hc_fires_complete)
-    dend_colors <- dend %>%
-      set("labels_col", get_colors(labels_complete), order_value = TRUE) %>%
-      set("labels_cex", 0.5)
-    
-    if (input$dend_label == "Cause") {
-      dend_labels <- dend_colors %>%
-        set("labels", fires_may15$STAT_CAUSE_DESCR, order_value = TRUE)
-    } else if (input$dend_label == "County") {
-      dend_labels <- dend_colors %>%
-        set("labels", fires_may15$COUNTY, order_value = TRUE)
-    } else if (input$dend_label == "Fire Size") {
-      dend_labels <- dend_colors %>%
-        set("labels", fires_may15$FIRE_SIZE, order_value = TRUE)
+
+  output$scatter <- renderPlotly({
+    # Filter data by state.
+    if (input$region == "Far North") {
+      wild_fires_sub_state <- wild_fires_sub[FN_indices,]
+    } else if (input$region == "Northeast") {
+      wild_fires_sub_state <- wild_fires_sub[NE_indices,]
+    } else if (input$region == "Northwest") {
+      wild_fires_sub_state <- wild_fires_sub[NW_indices,]
+    } else if (input$region == "Southeast") {
+      wild_fires_sub_state <- wild_fires_sub[SE_indices,]
+    } else { # Southwest
+      wild_fires_sub_state <- wild_fires_sub[SW_indices,]
     }
-    # TODO(Christina): Undo hardcoding of dendrogram label.
-    dend_labels <- dend_colors %>%
-      set("labels", fires_may15$FIRE_SIZE_CLASS, order_value = TRUE)
     
-    ggplot(dend_labels, horiz = T) + bthayill_315_theme +
+    # Scatter plot.
+    p <- ggplot(data = wild_fires_sub_state, aes(x = fire_length, y = FIRE_SIZE,
+                                                 text = paste("state:", STATE))) + 
+      geom_point(aes(color = season)) +
+      bthayill_315_theme + scale_fill_manual(values = cb_palette) +
       labs(
-        title = "2015 Colorado Fires",
-        x = "Pairwise Euclidean Distance"
-    )
+        title = "Fire Size vs Number of Days Until Contained",
+        x = "Number of Days Until Fire Contained",
+        y = "Fire Size (Acres)",
+        color = "Season"
+      )
+    
+    p_plotly <- ggplotly(p, tooltip = "text")
+    return(p_plotly)
+  })
+  
+  output$fire_location <- renderLeaflet({
+    wild_fires_by_month <- subset(wild_fires, 
+                                  (discovery_month == input$fire_month) &
+                                  (discovery_year == input$choro_year))
+    
+    pal <- colorFactor(c("#430A4B", "#1D5076", "#008781", "#64AE68"),
+                       domain = c("Infrastructure", "Nature", "Human", "Unknown"))
+    
+    m_leaflet <- leaflet(wild_fires_by_month) %>% setView(-96, 47.5, 3) %>%
+      addTiles() %>% 
+      addCircleMarkers(~LONGITUDE, ~LATITUDE,
+                       fillOpacity = 0.5,
+                       radius = ~point_radius,
+                       color = ~pal(cause_type),
+                       stroke = FALSE) %>%
+      addLegend(pal = pal, 
+                values = ~wild_fires_by_month$cause_type,
+                title = "Cause of Fire")
   })
   
 output$choropleth <- renderLeaflet({
@@ -150,70 +154,6 @@ output$choropleth <- renderLeaflet({
     
   })
   
-  output$histogram <- renderPlotly({
-    if (input$hist_type == "Count") { pos <- "stack" }
-    else if (input$hist_type == "Proportion") { pos <- "fill"}
-    
-    if (input$fire_size_range == "Small") {
-      small_indices = wild_fires$FIRE_SIZE_CLASS %in% c("A","B")
-      wild_fires_small = wild_fires[small_indices,]
-      ggplot(data = wild_fires_small, aes(x = FIRE_SIZE, fill = cause_type)) + 
-        geom_histogram(binwidth = 1, position = pos, color = "black") + 
-        bthayill_315_theme + scale_fill_manual(values = cb_palette) +
-        labs(
-          title = "Distribution of Fire Size",
-          x = "Acres",
-          y = "Number of Wild Fires",
-          fill = "Cause of Fire"
-        ) + theme(axis.text.y = element_text(angle = -45, hjust = 1))
-    }
-    
-    # TODO(Christina): Ask Matey is there a way to change the x-limits.
-    else if (input$fire_size_range == "Med") {
-      med_indices = wild_fires$FIRE_SIZE_CLASS %in% c("C", "D", "E")
-      wild_fires_med = wild_fires[med_indices,]
-      
-      ggplot(data = wild_fires_med, aes(x = FIRE_SIZE, fill = cause_type)) + 
-        geom_histogram(binwidth = 100, position = pos, color = "black") + 
-        bthayill_315_theme + scale_fill_manual(values = cb_palette) +
-        labs(
-          title = "Distribution of Fire Size",
-          x = "Acres",
-          y = "Number of Wild Fires",
-          fill = "Cause of Fire"
-        ) + theme(axis.text.y = element_text(angle = -45, hjust = 1))
-    }
-    
-    else if (input$fire_size_range == "Large") {
-      large_indices = wild_fires$FIRE_SIZE_CLASS %in% c("F")
-      wild_fires_large = wild_fires[large_indices,]
-      
-      ggplot(data = wild_fires_large, aes(x = FIRE_SIZE, fill = cause_type)) + 
-        geom_histogram(binwidth = 500, position = pos, color = "black") + 
-        bthayill_315_theme + scale_fill_manual(values = cb_palette) +
-        labs(
-          title = "Distribution of Fire Size",
-          x = "Acres",
-          y = "Number of Wild Fires",
-          fill = "Cause of Fire"
-        ) + theme(axis.text.y = element_text(angle = -45, hjust = 1))
-    }
-    
-    else if (input$fire_size_range == "Huge") {
-      huge_indices = wild_fires$FIRE_SIZE_CLASS %in% c("G")
-      wild_fires_huge = wild_fires[huge_indices,]
-      
-      ggplot(data = wild_fires_huge, aes(x = FIRE_SIZE, fill = cause_type)) + 
-        geom_histogram(binwidth = 75000, position = pos, color = "black") + 
-        bthayill_315_theme + scale_fill_manual(values = cb_palette) +
-        labs(
-          title = "Distribution of Fire Size",
-          x = "Acres",
-          y = "Number of Wild Fires",
-          fill = "Cause of Fire"
-        ) 
-    }
-})
   output$wordcloud_plot1 <- renderPlot({
     month <- input$month_input1
     wild_fires2 <- subset(wild_fires, discovery_month == month)

@@ -12,10 +12,10 @@ dashboardPage(
       menuItem("Number of Fires Over Time", tabName = "part_c", icon = icon("dashboard")),
       menuItem("Fire Causes Over Time", tabName = "part_i", icon = icon("dashboard")),
       menuItem("Fires by State", tabName = "part_h", icon = icon("dashboard")),
-      menuItem("Fire Size by State", tabName = "part_b", icon = icon("dashboard")),
-      menuItem("Side by Side Plot: Fire Size by State", tabName = "part_g", icon = icon("dashboard")),
-      menuItem("Clustering", tabName = "part_a", icon = icon("dashboard")),
-      menuItem("Fire Size by Cause", tabName = "part_e", icon = icon("dashboard")),
+      menuItem("Average Fire Size by State", tabName = "part_b", icon = icon("dashboard")),
+      menuItem("Fire Size Distribution by State", tabName = "part_g", icon = icon("dashboard")),
+      menuItem("Fire Duration", tabName = "part_d", icon = icon("dashboard")),
+      menuItem("Fire Location", tabName = "part_e", icon = icon("dashboard")),
       menuItem("Word Cloud of Cause by Month", tabName = "part_f", icon = icon("dashboard"))
     )
   ),
@@ -52,21 +52,26 @@ dashboardPage(
     ),
     
     tabItem(tabName = "part_d",
-             plotlyOutput(outputId = "scatter", height = "450px")
+            selectInput(inputId = "region",
+                        "US Region:",
+                        choices = c("Far North", "Northeast", "Northwest",
+                                    "Southeast", "Southwest"),
+                        selected = "Southwest"),
+            plotlyOutput(outputId = "scatter", height = "450px")
     ),
-    
     tabItem(tabName = "part_e",
-             selectInput(inputId = "fire_size_range",
-                         "Fire Size Range:",
-                         choices = c("Small", "Med", "Large", "Huge"),
-                         selected = "Small"),
-             selectInput(inputId = "hist_type",
-                         label = "Histogram Chart Type:",
-                         choices = c("Count", "Proportion"),
-                         selected = "Count"),
-             plotlyOutput(outputId = "histogram", height = "450px")
+            selectInput(inputId = "fire_month",
+                        label = "Select Month: ",
+                        choices = month.abb,
+                        selected = "Jan"),
+            sliderInput(inputId = "choro_year",
+                        label = "Select Year: ",
+                        min = 2010,
+                        max = 2015,
+                        step = 1,
+                        value = 2010),
+            leafletOutput(outputId = "fire_location", height = "450px")
     ),
-
     tabItem(tabName = "part_f",
             fluidRow(
               column(6,

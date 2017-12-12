@@ -131,4 +131,40 @@ temp_winter <- data.frame(
                   '2014-02-28', '2015-02-28', '2015-12-31'))
 ) 
 
+# =================== Computations for part_d =================================
+# Add column with seasons.
+summer <- c("Jun", "Jul", "Aug")
+fall <- c("Sep", "Oct", "Nov")
+winter <- c("Dec", "Jan", "Feb")
+spring <- c("Mar", "Apr", "May")
+wild_fires <- mutate(wild_fires,
+                     season = ifelse(discovery_month %in% summer, "Summer",
+                              ifelse(discovery_month %in% fall, "Fall",
+                              ifelse(discovery_month %in% winter, "Winter", "Spring"))))
+
+# Get wildfires that actually have a contained and discovery date.
+wild_fires_sub <- subset(wild_fires,!(is.na(wild_fires$CONT_DATE) |
+                                        is.na(wild_fires$DISCOVERY_DATE)))
+
+# Compute number of days fire lasts.
+wild_fires_sub <- mutate(wild_fires_sub,
+                         fire_length = CONT_DATE - DISCOVERY_DATE + 1)
+
+# Get indices of regions.
+FN_indices <- wild_fires_sub$STATE %in% FN_states
+NE_indices <- wild_fires_sub$STATE %in% NE_states
+NW_indices <- wild_fires_sub$STATE %in% NW_states
+SE_indices <- wild_fires_sub$STATE %in% SE_states
+SW_indices <- wild_fires_sub$STATE %in% SW_states
+
+# =================== Computations for part_e =================================
+
+# Add a radius size for the points.
+wild_fires <- mutate(wild_fires,
+                     point_radius = ifelse(FIRE_SIZE_CLASS == "A", 1,
+                                    ifelse(FIRE_SIZE_CLASS == "B", 2,
+                                    ifelse(FIRE_SIZE_CLASS == "C", 4,
+                                    ifelse(FIRE_SIZE_CLASS == "D", 6,
+                                    ifelse(FIRE_SIZE_CLASS == "E", 8,
+                                    ifelse(FIRE_SIZE_CLASS == "F", 10, 12)))))))
 
