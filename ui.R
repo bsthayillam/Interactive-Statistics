@@ -13,10 +13,10 @@ dashboardPage(
       menuItem("Fire Causes Over Time", tabName = "part_i", icon = icon("dashboard")),
       menuItem("Fires by State", tabName = "part_h", icon = icon("dashboard")),
       menuItem("Fire Size by State", tabName = "part_b", icon = icon("dashboard")),
-      menuItem("Fire Size by Latitude", tabName = "part_g", icon = icon("dashboard")),
+      menuItem("Side by Side Plot: Fire Size by State", tabName = "part_g", icon = icon("dashboard")),
       menuItem("Clustering", tabName = "part_a", icon = icon("dashboard")),
       menuItem("Fire Size by Cause", tabName = "part_e", icon = icon("dashboard")),
-      menuItem("Word Cloud of Cause by Year", tabName = "part_f", icon = icon("dashboard"))
+      menuItem("Word Cloud of Cause by Month", tabName = "part_f", icon = icon("dashboard"))
     )
   ),
   dashboardBody(
@@ -65,42 +65,55 @@ dashboardPage(
                          selected = "Count"),
              plotlyOutput(outputId = "histogram", height = "450px")
     ),
+
     tabItem(tabName = "part_f",
-            selectInput(inputId = "year_input2",
-                        label = "Year of the Fire: ",
-                        choices = years,
-                        selected = default_year),
-            plotOutput("wordcloud_plot")
+            fluidRow(
+              column(6,
+                     selectInput(inputId = "month_input1",
+                                 label = "Month of the Fire: ",
+                                 choices = month,
+                                 selected = default_month)
+                     ),
+              column(6,
+                     selectInput(inputId = "month_input2",
+                                 label = "Month of the Fire: ",
+                                 choices = month,
+                                 selected = default_month)
+                     
+                     )
+            ),
+            fluidRow(
+              column(6, 
+                     plotOutput(outputId = "wordcloud_plot1", width  = "500px",height = "400px")
+              ),
+              column(6,
+                     plotOutput(outputId = "wordcloud_plot2", width  = "500px",height = "400px")
+              ))
     ),
-    
     tabItem(tabName = "part_g",
-            selectInput(inputId = "year_input1",
-                        label = "Year of the Fire: ",
-                        choices = years,
-                        selected = default_year),
-            selectInput(inputId = "n_breaks",
-                        label = "Number of bins in histogram (approximate):",
-                        choices = c(10, 20, 35, 50),
-                        selected = 20),
-            checkboxInput(inputId = "individual_obs",
-                          label = strong("Show individual observations"),
-                          value = FALSE),
-            checkboxInput(inputId = "density",
-                          label = strong("Show density estimate"),
-                          value = FALSE),
-            conditionalPanel(condition = "input.density == true",
-                             sliderInput(inputId = "bw_adjust",
-                                         label = "Bandwidth adjustment:",
-                                         min = 0.2, max = 2, value = 1, step = 0.2)),
-            plotOutput("histogram_plot")
-    ),
-    
-    tabItem(tabName = "part_h",
-             selectInput(inputId = "state_bar_type",
-                         label = "Bar Chart Type:",
-                         choices = c("Stacked", "Side-by-Side", "Proportional"),
-                         selected = "Stacked"),
-             plotlyOutput(outputId = "state_bar")
+            fluidRow(
+              column(6,
+                     selectInput(inputId = "state_input1",
+                                 label = "State (Left): ",
+                                 choices = states,
+                                 selected = default_state)
+                     ),
+              column(6,
+                     selectInput(inputId = "state_input2",
+                                 label = "State (right): ",
+                                 choices = states,
+                                 selected = default_state)
+                     )
+            ),
+            
+            fluidRow(
+              column(6, 
+                     plotOutput(outputId = "histogram_plot1", width  = "500px",height = "400px")
+              ),
+              
+              column(6, 
+                     plotOutput(outputId = "histogram_plot2", width  = "500px",height = "400px")
+              ))
     ),
     
     tabItem(tabName = "part_i",

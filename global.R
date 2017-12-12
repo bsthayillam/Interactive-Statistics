@@ -61,4 +61,7 @@ wild_fires <- mutate(wild_fires,
 
 years <- c(2010, 2011, 2012, 2013, 2014, 2015)
 default_year = 2010
+default_state = "CA"
+
+states <- unique(wild_fires$STATE)
 

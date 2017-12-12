@@ -242,33 +242,47 @@ function(input, output) {
         ) 
     }
 })
-  output$wordcloud_plot <- renderPlot({
-    year <- input$year_input2
-    wild_fires2 <- subset(wild_fires, FIRE_YEAR == as.numeric(year))
+  output$wordcloud_plot1 <- renderPlot({
+    month <- input$month_input1
+    wild_fires2 <- subset(wild_fires, discovery_month == month)
     Corpus <- Corpus(VectorSource(wild_fires2$STAT_CAUSE_DESCR))
     wordcloud_plot <- wordcloud(Corpus, min.freq = 10, random.order = FALSE, colors = cb_palette, font = 2)
     print(wordcloud_plot)
   })
+    
+  output$wordcloud_plot2 <- renderPlot({
+    month <- input$month_input2
+    wild_fires2 <- subset(wild_fires, discovery_month == month)
+    Corpus <- Corpus(VectorSource(wild_fires2$STAT_CAUSE_DESCR))
+    wordcloud_plot2 <- wordcloud(Corpus, min.freq = 10, random.order = FALSE, colors = cb_palette, font = 2)
+    wordcloud_plot2
+    
+  })
   
-  output$histogram_plot <- renderPlot({
-    year <- input$year_input1
-    wild_fires1 <- subset(wild_fires, FIRE_YEAR == as.numeric(year))
-    histogram_plot <- ggplot(data = wild_fires1, aes(x = LATITUDE)) + 
-      geom_histogram(bins =as.numeric(input$n_breaks),color = "black", aes(y = ..density.., fill = FIRE_SIZE_CLASS)) +
+  output$histogram_plot1 <- renderPlot({
+    state <- input$state_input1
+    wild_fires3 <- subset(wild_fires, STATE == state)
+    histogram_plot1 <- ggplot(data = wild_fires3, aes(x = log(FIRE_SIZE))) + 
+      geom_histogram(bins = 40, color = "black") +
       scale_fill_manual(values = cb_palette) +
       bthayill_315_theme +
-      labs(x = "Latitude", y = "Number of Fire", fill = "Size of Fire") +
+      labs(x = "Log Fire Size", y = "Number of Fire") +
       ggtitle("Occurance of Fire at Different Latitude by Size")
-    
-    if (input$individual_obs) {
-      histogram_plot <- histogram_plot + geom_rug()
-    }
-    
-    if (input$density) {
-      histogram_plot <- histogram_plot + geom_density(adjust = input$bw_adjust, 
-                                            color = "orange", size = 1.25)
-    }
-    print(histogram_plot)
+    histogram_plot1
+  
+  })
+  
+  output$histogram_plot2 <- renderPlot({
+    state <- input$state_input2
+    wild_fires4 <- subset(wild_fires, STATE == state)
+    histogram_plot2 <- ggplot(data = wild_fires4, aes(x = log(FIRE_SIZE))) + 
+      geom_histogram(bins = 40,color = "black") +
+      scale_fill_manual(values = cb_palette) +
+      bthayill_315_theme +
+      labs(x = "Log Fire Size", y = "Number of Fire") +
+      ggtitle("Occurance of Fire at Different Latitude by Size")
+
+    histogram_plot2
     
   })
   
