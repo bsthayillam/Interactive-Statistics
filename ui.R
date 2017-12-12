@@ -41,12 +41,13 @@ dashboardPage(
     ),
     
     tabItem(tabName = "part_c",
-            checkboxInput(inputId = "show_average",
-                          label = strong("Show estimated average"),
-                          value = FALSE),
             checkboxInput(inputId = "show_weighted_average",
                           label = strong("Show estimated weighted average"),
                           value = FALSE),
+            selectInput(inputId = "show_season",
+                        label = "Show Season:",
+                        choices = c("Spring", "Summer", "Autumn", "Winter"),
+                        selected = "Spring"),
              plotOutput(outputId = "ts_plot", height = "450px")
     ),
     

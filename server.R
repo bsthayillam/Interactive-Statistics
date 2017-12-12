@@ -105,74 +105,47 @@ function(input, output) {
   
   output$ts_plot <- renderPlot({
     
-    fires_per_day <- wild_fires %>% 
-      group_by(discovery_date) %>% 
-      summarize(n_fires = n())
-    
-    hf1 <- function(tt, time_series, ww) {
-      if (ww > length(time_series))
-        stop("Window width is greater than length of time series")
-      if (tt < ww) return(NA)
-      else (return (mean(time_series[tt-ww+1]:tt)))
-    }
-    
-    hf2 <- function(time_series, ww) {
-      if (ww > length(time_series))
-        stop("Window width is greater than length of time series")
-      all_average <- sapply(1:length(time_series), FUN = hf1,
-                            time_series = time_series, ww = ww)
-      return(all_average)
-    }
-    
-    hf3 <- function(tt, time_series, ww, weights = NULL) {
-      if (ww > length(time_series))
-        stop("Window width is greater than length of time series")
-      if (is.null(weights)) weights <- rep(1/ww, ww)
-      if (length(weights) != ww)
-        stop("Weights should have the same length as the window width")
-      if (tt < ww) return (NA)
-      
-      weights <- weights / sum(weights)
-      return (sum(weights*time_series[(tt-ww+1):tt]))
-    }
-    
-    hf4 <- function(time_series, ww, weights) {
-      if(ww > length(time_series))
-        stop("Window width is greater than length of time series")
-      if (is.null(weights)) weights <- rep(1/ww, ww)
-      if(length(weights) != ww)
-        stop("Weights should have the same length as the window width")
-      
-      weights <- weights / sum(weights)
-      all_average <- sapply(1:length(time_series), FUN = hf3,
-                            time_series = time_series, ww = ww)
-      return(all_average)
-    }
-    
-    fires_average_16 <- hf2(fires_per_day$n_fires, 16)
-    fires_per_day$fires_average_16 <- fires_average_16
-    fires_weighted_average_16 <- hf4(fires_per_day$n_fires, 16, 
-                                     weights = c(4,4,3,3,3,3,2,1,1,1,1,1,1,1,0.5,0.5))
-    fires_per_day$fires_weighted_average_16 <- fires_weighted_average_16
-    
-    ts_plot <- ggplot(fires_per_day, aes(x = discovery_date, y = n_fires)) + geom_line() + 
-      scale_x_date() + bthayill_315_theme +
+    ts_plot <- ggplot(fires_per_day, 
+                      aes(x = discovery_date, y = n_fires)) + geom_line() + 
+      scale_x_date() +
       labs(title = "Distribution of Wild Fires Over Time", 
            x = "Date", 
            y = "Numbers of Fire")
     
-    
-    if (input$show_average) {
-      ts_plot <- ts_plot + 
-        geom_line(aes(y = fires_average_16), 
-                  color = "blue", size = 1, alpha = 0.8)
-    }
-    
     if (input$show_weighted_average) {
-      ts_plot <- ts_plot +
+      ts_plot <- ts_plot + 
         geom_line(aes(y = fires_weighted_average_16),
                   color = "red", size = 2, alpha = 0.8)
     }
+    
+    if (input$show_season == "Spring") {
+      ts_plot <- ts_plot + 
+        geom_rect(data = temp_spring, 
+                  aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+                  inherit.aes = FALSE, alpha = 0.4, fill = "lightpink") 
+    }
+    
+    else if (input$show_season == "Summer") {
+      ts_plot <- ts_plot +
+        geom_rect(data = temp_summer, 
+                  aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+                  inherit.aes = FALSE, alpha = 0.4, fill = "yellow")
+    }
+    
+    else if (input$show_season == "Autumn") {
+      ts_plot <- ts_plot +
+        geom_rect(data = temp_autumn, 
+                  aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+                  inherit.aes = FALSE, alpha = 0.4, fill = "orange") 
+    }
+    
+    else if (input$show_season == "Winter") {
+      ts_plot <- ts_plot +
+        geom_rect(data = temp_winter, 
+                  aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+                  inherit.aes = FALSE, alpha = 0.4, fill = "lightblue")
+    }
+    
     
     print(ts_plot)
     
@@ -394,3 +367,4 @@ function(input, output) {
     grid.arrange(sub1_ts_plot, sub2_ts_plot, nrow = 2, ncol = 1)
   })
 }
+

@@ -65,3 +65,69 @@ default_state = "CA"
 
 states <- unique(wild_fires$STATE)
 
+
+#fires_per_day dataframe
+fires_per_day <- wild_fires %>% 
+  group_by(discovery_date) %>% 
+  summarize(n_fires = n())
+
+hf1 <- function(tt, time_series, ww, weights = NULL) {
+  if (ww > length(time_series))
+    stop("Window width is greater than length of time series")
+  if (is.null(weights)) weights <- rep(1/ww, ww)
+  if (length(weights) != ww)
+    stop("Weights should have the same length as the window width")
+  if (tt < ww) return (NA)
+  
+  weights <- weights / sum(weights)
+  return (sum(weights*time_series[(tt-ww+1):tt]))
+}
+
+hf2 <- function(time_series, ww, weights) {
+  if(ww > length(time_series))
+    stop("Window width is greater than length of time series")
+  if (is.null(weights)) weights <- rep(1/ww, ww)
+  if(length(weights) != ww)
+    stop("Weights should have the same length as the window width")
+  
+  weights <- weights / sum(weights)
+  all_average <- sapply(1:length(time_series), FUN = hf1,
+                        time_series = time_series, ww = ww)
+  return(all_average)
+}
+
+fires_weighted_average_16 <- hf2(fires_per_day$n_fires, 16, 
+                                 weights = c(4,4,3,3,3,3,2,1,1,1,1,1,1,1,0.5,0.5))
+fires_per_day$fires_weighted_average_16 <- fires_weighted_average_16
+
+#season dataframe
+
+temp_spring <- data.frame(
+  start = as.Date(c('2010-03-01', '2011-03-01', '2012-03-01', 
+                    '2013-03-01', '2014-03-01', '2015-03-01')),
+  end = as.Date(c('2010-05-31', '2011-05-31', '2012-05-31', 
+                  '2013-05-31', '2014-05-31', '2015-05-31'))
+) 
+
+temp_summer <- data.frame(
+  start = as.Date(c('2010-06-01', '2011-06-01', '2012-06-01', 
+                    '2013-06-01', '2014-06-01', '2015-06-01')),
+  end = as.Date(c('2010-08-31', '2011-08-31', '2012-08-31', 
+                  '2013-08-31', '2014-08-31', '2015-08-31'))
+) 
+
+temp_autumn <- data.frame(
+  start = as.Date(c('2009-09-01','2010-09-01', '2011-09-01', '2012-09-01', 
+                    '2013-09-01', '2014-09-01', '2015-09-01')),
+  end = as.Date(c('2009-11-30','2010-11-30', '2011-11-3', '2012-11-30', 
+                  '2013-11-30', '2014-11-30', '2015-11-30'))
+) 
+
+temp_winter <- data.frame(
+  start = as.Date(c('2009-12-01','2010-12-01', '2011-12-01', '2012-12-01', 
+                    '2013-12-01', '2014-12-01', '2015-12-01')),
+  end = as.Date(c('2010-02-28','2011-02-28', '2012-02-29', '2013-02-28', 
+                  '2014-02-28', '2015-02-28', '2015-12-31'))
+) 
+
+
