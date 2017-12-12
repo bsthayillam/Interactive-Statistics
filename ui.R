@@ -148,6 +148,19 @@ dashboardPage(
               ))
     ),
     
+    tabItem(tabName = "part_h", 
+            selectInput(inputId = "fire_state1",
+                        label = "State(Left):",
+                        choices = states,
+                        selected = default_state),
+            selectInput(inputId = "fire_state2",
+                        label = "State(Right):",
+                        choices = states,
+                        selected = default_state),
+            plotlyOutput(outputId = "state_bar")
+            
+    ),
+    
     tabItem(tabName = "part_i",
              selectInput(inputId = "fire_cause1",
                          label = "First Fire Cause:",

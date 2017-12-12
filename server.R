@@ -208,43 +208,31 @@ output$choropleth <- renderLeaflet({
   })
   
   output$state_bar <- renderPlotly({
-    if(input$state_bar_type == "Stacked") {
-      ggplot(data = wild_fires,
-             aes(x = STATE, fill = STAT_CAUSE_DESCR)) + 
-        geom_bar(color = "black") + bthayill_315_theme +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5), 
-              axis.text.y = element_text(size = 5)) +
-        labs(title = "Distribution of Wild Fires by State",
-                          x = "State",
-                          y = "Number of Wild Fires",
-                          fill = "Wild Fire Causes")
-    }
     
-    else if(input$state_bar_type == "Side-by-Side") {
-      ggplot(data = wild_fires,
-             aes(x = STATE, fill = STAT_CAUSE_DESCR)) +
-        geom_bar(position = "dodge", color = "black") + bthayill_315_theme +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5), 
-              axis.text.y = element_text(size = 5)) +
-        labs(title = "Distribution of Wild Fires by State",
-                                            x = "State",
-                                            y = "Number of Wild Fires",
-                                            fill = "Wild Fire Causes")
-    }
+    wildfire_sub_state1 <- subset(wild_fires, STATE == input$fire_state1)
+    wildfire_sub_state2 <- subset(wild_fires, STATE == input$fire_state2)
     
-    else if(input$state_bar_type == "Proportional") {
-      ggplot(data = wild_fires, 
-             aes(x = STATE, fill = STAT_CAUSE_DESCR)) + 
-        geom_bar(position = "fill", na.rm = TRUE, color = "black") + 
-        bthayill_315_theme +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5), 
-              axis.text.y = element_text(size = 5)) +
-        labs(title = "Distribution of Wild Fires by State",
-                                           x = "State",
-                                           y = "Number of Wild Fires",
-                                           fill = "Wild Fire Causes")
-    }
+    state_bar_plot1 <- ggplot(data = wildfire_sub_state1, 
+                              aes(x = STAT_CAUSE_DESCR)) + 
+      geom_bar(fill = "orange", color = "black") + 
+      bthayill_315_theme +
+      labs(title = "Distribution of Wild Fires Causes",
+           x = "Causes of Fire",
+           y = "Number of Fire") +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 9),
+            axis.text.y = element_text(size = 7))
     
+    state_bar_plot2 <- ggplot(data = wildfire_sub_state2, 
+                              aes(x = STAT_CAUSE_DESCR)) +
+      geom_bar(fill = "lightblue", color = "black") + 
+      bthayill_315_theme +
+      labs(title = "Distribution of Wild Fires Causes",
+           x = "Causes of Fire",
+           y = "Number of Fire") +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 9),
+            axis.text.y = element_text(size = 7))
+    
+    subplot(state_bar_plot1, state_bar_plot2) 
   })
   
   output$cause_ts <- renderPlot({
