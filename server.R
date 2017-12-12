@@ -60,8 +60,7 @@ function(input, output) {
     )
   })
   
-  output$choropleth <- renderLeaflet({
-    
+output$choropleth <- renderLeaflet({
     state_avg <- subset(wild_fires, discovery_month == input$choro_month) %>% 
       group_by(STATE) %>% summarize(avg_size = round(mean(FIRE_SIZE), 2))
     state_avg <- left_join(state_avg, state_data, by = c("STATE" = "state.abb"))
@@ -79,7 +78,7 @@ function(input, output) {
       "</strong><br/>Average Fire Size (Acres): ",
       state_info$avg_size) %>% lapply(htmltools::HTML)
     
-    m_leaflet <- leaflet(states) %>% setView(-96, 47.5, 3) %>%
+    m_leaflet <- leaflet(states_geo) %>% setView(-96, 47.5, 3) %>%
       addTiles() %>% 
       addPolygons(fillColor = ~pal(state_info$avg_size),
                   weight = 1,
@@ -98,10 +97,10 @@ function(input, output) {
                     style = list("font-weight" = "normal", padding = "3px 8px"),
                     textsize = "16px",
                     direction = "auto")) %>%
-      addLegend(pal = pal, 
+      addLegend(pal = pal,
                 values = ~state_info$avg_size,
                 title = "Average Fire Size (Acres)")
-  })
+})
   
   output$ts_plot <- renderPlot({
     

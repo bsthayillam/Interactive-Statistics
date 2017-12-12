@@ -41,8 +41,8 @@ cb_palette <- rev(c("#430A4B", "#1D5076", "#008781", "#64AE68", "#DBC363", "#FCD
 state_vis_string <- paste0("https://raw.githubusercontent.com/python-visualization/",
                            "folium/master/examples/data/us-states.json")
 
-states = geojson_read(state_vis_string, method = "local", what = "sp")
-state_info <- data.frame(name = as.character(states$name) )
+states_geo = geojson_read(state_vis_string, method = "local", what = "sp")
+state_info <- data.frame(name = as.character(states_geo$name) )
 state_info$name <- as.character(state_info$name)
 
 state_data <- data_frame(state.abb, state.name = state.name)

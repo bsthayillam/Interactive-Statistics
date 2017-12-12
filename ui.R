@@ -72,13 +72,13 @@ dashboardPage(
               column(6,
                      selectInput(inputId = "month_input1",
                                  label = "Month of the Fire: ",
-                                 choices = month,
+                                 choices = month.abb,
                                  selected = default_month)
                      ),
               column(6,
                      selectInput(inputId = "month_input2",
                                  label = "Month of the Fire: ",
-                                 choices = month,
+                                 choices = month.abb,
                                  selected = default_month)
                      
                      )
