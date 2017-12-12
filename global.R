@@ -151,6 +151,15 @@ wild_fires_sub <- mutate(wild_fires_sub,
                          fire_length = CONT_DATE - DISCOVERY_DATE + 1)
 
 # Get indices of regions.
+FN_states = c("AK")
+NE_states = c("CT","IA","IN","MA","ME","MI","MN","NH","NJ","NY","OH","PA","RI",
+              "SD","VA","VT","WI","WV")
+NW_states = c("CO","ID","MT","ND","NE","OR","SD","UT","WA","WY")
+SE_states = c("AL","AR","DE","FL","GA","IL","KS","KY","LA","MD","MO","MS","NC",
+              "SC","TN")
+SW_states = c("AZ","CA","NM","NV","OK","TX")
+
+
 FN_indices <- wild_fires_sub$STATE %in% FN_states
 NE_indices <- wild_fires_sub$STATE %in% NE_states
 NW_indices <- wild_fires_sub$STATE %in% NW_states
