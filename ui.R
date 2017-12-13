@@ -10,12 +10,12 @@ dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Number of Fires Over Time", tabName = "part_c", icon = icon("dashboard")),
-      menuItem("Fire Causes Over Time", tabName = "part_i", icon = icon("dashboard")),
       menuItem("Fires by State", tabName = "part_h", icon = icon("dashboard")),
+      menuItem("Fire Location", tabName = "part_e", icon = icon("dashboard")),
       menuItem("Average Fire Size by State", tabName = "part_b", icon = icon("dashboard")),
       menuItem("Fire Size Distribution by State", tabName = "part_g", icon = icon("dashboard")),
       menuItem("Fire Duration", tabName = "part_d", icon = icon("dashboard")),
-      menuItem("Fire Location", tabName = "part_e", icon = icon("dashboard")),
+      menuItem("Fire Causes Over Time", tabName = "part_i", icon = icon("dashboard")),
       menuItem("Word Cloud of Cause by Month", tabName = "part_f", icon = icon("dashboard"))
     )
   ),
