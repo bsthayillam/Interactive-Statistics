@@ -56,7 +56,7 @@ function(input, output) {
       addTiles() %>% 
       addCircleMarkers(~LONGITUDE, ~LATITUDE,
                        fillOpacity = 0.5,
-                       radius = ~point_radius,
+                       radius = 6,
                        color = ~pal(cause_type),
                        stroke = FALSE) %>%
       addLegend(pal = pal, 
