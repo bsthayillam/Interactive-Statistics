@@ -181,11 +181,7 @@ output$choropleth <- renderLeaflet({
       labs(x = "Log (Fire Size / acre)", y = "Number of Fire") +
       ggtitle("Fire Size in States")
     print(histogram_plot1)
-    
-    if (input$individual_obs1) {
-      histogram_plot1 <- histogram_plot1 + geom_rug()
-      print(histogram_plot1)
-    }
+
   
   })
   
@@ -200,10 +196,7 @@ output$choropleth <- renderLeaflet({
       ggtitle("Fire Size in States")
     print(histogram_plot2)
     
-    if (input$individual_obs2) {
-      histogram_plot2 <- histogram_plot2 + geom_rug()
-      print(histogram_plot2)
-    }
+
     
   })
   

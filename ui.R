@@ -125,18 +125,6 @@ dashboardPage(
                                  selected = 20)
                      )
             ),
-            fluidRow(
-              column(6,
-                     checkboxInput(inputId = "individual_obs1",
-                                   label = strong("Show individual observations"),
-                                   value = FALSE)
-                     ),
-                     column(6,
-                            checkboxInput(inputId = "individual_obs2",
-                                          label = strong("Show individual observations"),
-                                          value = FALSE)
-              )
-              ),
               
             fluidRow(
               column(6, 
